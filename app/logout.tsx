@@ -4,12 +4,13 @@ import { signOut } from 'next-auth/react';
 
 export default function Logout() {
   return (
-    <span
+    <button
       onClick={() => {
         signOut();
       }}
+      className={"px-[25px] border rounded-full bg-white"}
     >
       Logout
-    </span>
+    </button>
   );
 }

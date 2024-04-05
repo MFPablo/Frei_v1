@@ -18,8 +18,9 @@ export default function Form() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-2 mx-auto max-w-md mt-10"
+      className="flex flex-col gap-2 mx-auto max-w-md mt-10 items-center border rounded-[15px] bg-gray-900 p-[45px]"
     >
+      <p className={"text-white font-bold"}>Sign-Up</p>
       <input
         name="email"
         className="border border-black text-black"
@@ -30,7 +31,7 @@ export default function Form() {
         className="border border-black  text-black"
         type="password"
       />
-      <button type="submit">Register</button>
+      <button type="submit" className={"px-[15px] border rounded-full bg-white max-w-max"}>Register</button>
     </form>
   );
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prismadb from "@/lib/prismadb";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 
 export async function PATCH(
@@ -8,7 +9,7 @@ export async function PATCH(
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const session = await getServerSession() || undefined;
+    const session = await getServerSession(authOptions) || undefined;
     const userId = session?.user?.id ?? undefined;
     const body = await req.json();
 
@@ -49,7 +50,7 @@ export async function DELETE(
   { params }: { params: { storeId: string } }
 ) {
   try{
-    const session = await getServerSession() || undefined;
+    const session = await getServerSession(authOptions) || undefined;
     const userId = session?.user?.id ?? undefined;
 
     if (!userId) {

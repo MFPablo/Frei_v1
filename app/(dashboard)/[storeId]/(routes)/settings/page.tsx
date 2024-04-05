@@ -3,6 +3,7 @@ import prismadb from "@/lib/prismadb";
 
 import { SettingsForm } from "./components/settings-form";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const SettingsPage = async ({
   params
@@ -10,7 +11,7 @@ const SettingsPage = async ({
   params: { storeId: string }
 }) => {
 
-  const session = await getServerSession() || undefined;
+  const session = await getServerSession(authOptions) || undefined;
   const userId = session?.user?.id ?? undefined;
 
   if (!userId) {

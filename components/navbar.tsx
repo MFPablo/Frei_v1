@@ -4,9 +4,10 @@ import { MainNav } from "@/components/main-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 import prisma from "@/utils/prismaClient";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const Navbar = async () => {
-  const session = await getServerSession() || undefined;
+  const session = await getServerSession(authOptions) || undefined;
   const userId = session?.user?.id ?? undefined;
   if (!userId) {
     redirect('/login');

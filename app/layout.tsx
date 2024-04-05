@@ -7,6 +7,7 @@ import { ToastProvider } from '@/providers/toast-provider'
 import { ThemeProvider } from '@/providers/theme-provider'
 import Link from 'next/link';
 import Logout from './logout';
+import { authOptions } from "@/lib/auth";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,13 +21,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body className={inter.className}>
         <nav>
           {!!session && <Logout />}
-          {!session && <Link href="/login">Login</Link>}
+          {!session && <Link href="/login" className={"px-[25px] border rounded-full bg-white"}>Login</Link>}
         </nav>
         <ThemeProvider
           attribute="class"
