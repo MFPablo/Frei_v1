@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
-
-import prismadb from "@/lib/prismadb";
+import prisma from "@/utils/prismaClient";
+import { getServerSession } from "next-auth";
 
 export async function GET(
   req: Request,
@@ -12,7 +11,7 @@ export async function GET(
       return new NextResponse("Billboard id is required", { status: 400 });
     }
 
-    const billboard = await prismadb.billboard.findUnique({
+    const billboard = await prisma.billboard.findUnique({
       where: {
         id: params.billboardId
       }
@@ -30,7 +29,8 @@ export async function DELETE(
   { params }: { params: { billboardId: string, storeId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const session = await getServerSession() || undefined;
+    const userId = session?.user?.id ?? undefined;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -40,10 +40,10 @@ export async function DELETE(
       return new NextResponse("Billboard id is required", { status: 400 });
     }
 
-    const storeByUserId = await prismadb.store.findFirst({
+    const storeByUserId = await prisma.store.findFirst({
       where: {
         id: params.storeId,
-        userId,
+        userId: userId
       }
     });
 
@@ -51,7 +51,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const billboard = await prismadb.billboard.delete({
+    const billboard = await prisma.billboard.delete({
       where: {
         id: params.billboardId,
       }
@@ -69,8 +69,9 @@ export async function PATCH(
   req: Request,
   { params }: { params: { billboardId: string, storeId: string } }
 ) {
-  try {   
-    const { userId } = auth();
+  try {
+    const session = await getServerSession() || undefined;
+    const userId = session?.user?.id ?? undefined;
 
     const body = await req.json();
     
@@ -92,10 +93,10 @@ export async function PATCH(
       return new NextResponse("Billboard id is required", { status: 400 });
     }
 
-    const storeByUserId = await prismadb.store.findFirst({
+    const storeByUserId = await prisma.store.findFirst({
       where: {
         id: params.storeId,
-        userId,
+        userId: userId
       }
     });
 
@@ -103,7 +104,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const billboard = await prismadb.billboard.update({
+    const billboard = await prisma.billboard.update({
       where: {
         id: params.billboardId,
       },

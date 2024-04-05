@@ -1,4 +1,4 @@
-import prismadb from "@/lib/prismadb";
+import prisma from "@/utils/prismaClient";
 
 interface GraphData {
   name: string;
@@ -6,7 +6,7 @@ interface GraphData {
 }
 
 export const getGraphRevenue = async (storeId: string): Promise<GraphData[]> => {
-  const paidOrders = await prismadb.order.findMany({
+  const paidOrders = await prisma.order.findMany({
     where: {
       storeId,
       isPaid: true,

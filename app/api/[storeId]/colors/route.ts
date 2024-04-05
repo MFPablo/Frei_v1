@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from "next-auth";
+import prisma from "@/utils/prismaClient";
 
-import prismadb from '@/lib/prismadb';
-import { auth } from '@clerk/nextjs';
- 
 export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const session = await getServerSession() || undefined;
+    const userId = session?.user?.id ?? undefined;
 
     const body = await req.json();
 
@@ -30,7 +30,7 @@ export async function POST(
       return new NextResponse("Store id is required", { status: 400 });
     }
 
-    const storeByUserId = await prismadb.store.findFirst({
+    const storeByUserId = await prisma.store.findFirst({
       where: {
         id: params.storeId,
         userId
@@ -41,7 +41,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const color = await prismadb.color.create({
+    const color = await prisma.color.create({
       data: {
         name,
         value,
@@ -65,7 +65,7 @@ export async function GET(
       return new NextResponse("Store id is required", { status: 400 });
     }
 
-    const colors = await prismadb.color.findMany({
+    const colors = await prisma.color.findMany({
       where: {
         storeId: params.storeId
       }

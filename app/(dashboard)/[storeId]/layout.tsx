@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation';
-import { auth } from '@clerk/nextjs';
-
 import Navbar from '@/components/navbar'
-import prismadb from '@/lib/prismadb';
+import { getServerSession } from "next-auth";
+import prisma from "@/utils/prismaClient";
 
 export default async function DashboardLayout({
   children,
@@ -11,16 +10,18 @@ export default async function DashboardLayout({
   children: React.ReactNode
   params: { storeId: string }
 }) {
-  const { userId } = auth();
+  const session = await getServerSession();
 
-  if (!userId) {
-    redirect('/sign-in');
+  console.log(session)
+
+  if (!session?.user?.id) {
+    redirect('/login');
   }
 
-  const store = await prismadb.store.findFirst({ 
+  const store = await prisma.store.findFirst({
     where: {
       id: params.storeId,
-      userId,
+      userId: session?.user?.id,
     }
    });
 

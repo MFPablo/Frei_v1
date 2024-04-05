@@ -1,9 +1,15 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { withAuth } from "next-auth/middleware"
 
-export default authMiddleware({
-  publicRoutes: ["/api/:path*"],
-});
+export default withAuth(
+  // `withAuth` augments your `Request` with the user's token.
+  function middleware(req) {
+    console.log(req.nextauth.token)
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => token?.role === "admin",
+    },
+  }
+)
 
-export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
-};
+export const config = { matcher: ["/admin"] }

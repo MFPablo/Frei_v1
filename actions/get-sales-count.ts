@@ -1,7 +1,7 @@
-import prismadb from "@/lib/prismadb";
+import prisma from "@/utils/prismaClient";
 
 export const getSalesCount = async (storeId: string) => {
-  const salesCount = await prismadb.order.count({
+  const salesCount = await prisma.order.count({
     where: {
       storeId,
       isPaid: true

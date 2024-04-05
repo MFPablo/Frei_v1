@@ -1,21 +1,20 @@
-import { UserButton, auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-
 import StoreSwitcher from "@/components/store-switcher";
 import { MainNav } from "@/components/main-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
-import prismadb from "@/lib/prismadb";
+import prisma from "@/utils/prismaClient";
+import { getServerSession } from "next-auth";
 
 const Navbar = async () => {
-  const { userId } = auth();
-
+  const session = await getServerSession() || undefined;
+  const userId = session?.user?.id ?? undefined;
   if (!userId) {
-    redirect('/sign-in');
+    redirect('/login');
   }
 
-  const stores = await prismadb.store.findMany({
+  const stores = await prisma.store.findMany({
     where: {
-      userId,
+      userId: userId
     }
   });
 
@@ -26,7 +25,6 @@ const Navbar = async () => {
         <MainNav className="mx-6" />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
-          <UserButton afterSignOutUrl="/" />
         </div>
       </div>
     </div>

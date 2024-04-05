@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
 
 import prismadb from '@/lib/prismadb';
+import { getServerSession } from "next-auth";
  
 export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const session = await getServerSession() || undefined;
+    const userId = session?.user?.id ?? undefined;
 
     const body = await req.json();
 
@@ -33,7 +34,7 @@ export async function POST(
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
-        userId,
+        userId: userId
       }
     });
 
